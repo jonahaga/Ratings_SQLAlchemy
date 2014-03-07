@@ -33,7 +33,7 @@ def load_movies(session):
                 pattern = "%d-%b-%Y"
                 formatted_date = datetime.datetime.strptime(date_string, pattern)
 
-            new_movie = model.Movies(name=row[1].decode("latin-1"), released_at=formatted_date, imdb_url=row[3])
+            new_movie = model.Movies(name=row[1].decode("latin-1"), released_at=formatted_date, imdb_url=row[4])
 
             session.add(new_movie)
 
@@ -44,7 +44,7 @@ def load_ratings(session):
     with open('seed_data/u.data', 'rb') as f:
         reader = csv.reader(f, delimiter = "\t")
         for row in reader:
-            new_rating = model.Ratings(movie_id=row[0], user_id=row[1], rating=row[2])
+            new_rating = model.Ratings(user_id=row[0], movie_id=row[1], rating=row[2])
 
             session.add(new_rating)
 
@@ -53,7 +53,7 @@ def load_ratings(session):
 
 def main(session):
     # You'll call each of the load_* functions with the session as an argument
-    # load_users(session)
+    load_users(session)
     load_movies(session)
     load_ratings(session)
 
