@@ -42,7 +42,7 @@ def load_movies(session):
 def load_ratings(session):
     # use u.data
     with open('seed_data/u.data', 'rb') as f:
-        reader = csv.reader(f, delimiter = " ")
+        reader = csv.reader(f, delimiter = "\t")
         for row in reader:
             new_rating = model.Ratings(movie_id=row[0], user_id=row[1], rating=row[2])
 
