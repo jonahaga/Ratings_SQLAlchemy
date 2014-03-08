@@ -19,8 +19,6 @@ def login():
     password = request.form.get("password")
     email = model.authenticate(email, password)
 
-    print email
-
     if email == False:
         flash("User does not exist. Please register below.")
         return redirect(url_for("register"))
