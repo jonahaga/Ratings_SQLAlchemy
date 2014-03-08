@@ -1,14 +1,18 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, DateTime
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, backref
 
-ENGINE = None
-Session = None
+# Scoped Session and session maker help deal with thread safety for multiple users with web apps
+engine = create_engine("sqlite:///ratings.db", echo=False)
+session = scoped_session(sessionmaker(bind=engine,
+                                      autocommit = False,
+                                      autoflush = False))
 
 Base = declarative_base()
+Base.query = session.query_property()
 
 ### Class declarations go here
 
@@ -42,18 +46,36 @@ class Ratings(Base):
     rating = Column(Integer, nullable = False)
 
     user = relationship("User", backref=backref("ratings", order_by=id))
+    movie = relationship("Movies", backref=backref("ratings", order_by=id))
 
 ### End class declarations
 
-def connect():
-    global ENGINE
-    global Session
+##functions
 
-    ENGINE = create_engine("sqlite:///ratings.db", echo=True)
-    Session = sessionmaker(bind=ENGINE)
+def create_new_user(email, password, age, gender, zipcode):
+    new_user = User(email=email, password=hash(password), age=age, gender=gender, zipcode=zipcode)
+    session.add(new_user)
+    session.commit()
 
-    return Session()
+def get_userid_by_email(email):
+    user_id = session.query(User).filter_by(email = email).first()
+    return user_id.id
 
+def authenticate(email, password):
+    user = session.query(User).filter_by(email = email).first()
+    
+    if user == None:
+        return False
+    else:
+        if email == str(user.email) and hash(password) == int(user.password):
+            return int(user.id)
+        else:
+            return None 
+
+
+
+# model.get_userid_by_email(email)
+#     ratings = model.get_ratings_by_userid(user_id)
 def main():
     """In case we need this for something"""
     pass
