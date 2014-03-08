@@ -1,0 +1,15 @@
+{% extends 'master.html' %}
+
+{% block body %}
+    <form>
+        <input type="text" class="form-control" placeholder="Username" name="username">
+        <input type="password" class="form-control" placeholder="Password" name="password">
+        <input type="password" class="form-control" placeholder="Password" name="password_verify">
+        <input type="submit" class="btn btn-lg btn-primary btn-block" value="Submit">
+    </form>
+
+<!-- {% for user in users %}
+<h2>User {{ user.id }}, age {{ user.age }} has {{ user.ratings|length }} ratings</h2>
+{% endfor %}
+ -->
+{% endblock %}
