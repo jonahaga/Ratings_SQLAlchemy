@@ -3,9 +3,29 @@
 {% block body %}
 <!-- in the for loop below "user" is the iterator so it could be anything i.id  i.age etc. -->
 <h2>User List</h2>
-<ul>
-    {% for user in users %}
-    <li><a href={{ url_for("view_user", user_id=user.id ) }}>User {{ user.id }}, age {{ user.age }} has {{ user.ratings|length }} ratings</a></li>
-    {% endfor %}
-</ul>
+    
+    <div class="user-list">
+        <table>
+            <tbody>
+                <tr class="user_list_head">
+                    <td class="user_id_head">User ID</td>
+                    <td class="user_age_head">Age</td>
+                    <td class="user_ratings_head">Number of Ratings</td>
+                </tr>
+                {% for user in users %}
+                <tr>                           
+                    <td class="user_id_body"><a href={{ url_for("view_user", user_id=user.id ) }}>User {{ user.id }}</a></td>
+                    <td class="user_age_body"><a href={{ url_for("view_user", user_id=user.id ) }}>{{ user.age }}</a></td>
+                    <td class="user_ratings_body"><a href={{ url_for("view_user", user_id=user.id ) }}>{{ user.ratings|length }} ratings</a></td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+<!--         <ul>
+            {% for user in users %}
+                <li><a href={{ url_for("view_user", user_id=user.id ) }}><span class="user-id">User {{ user.id }}</span> <span class="age">age {{ user.age }}</a> has {{ user.ratings|length }} ratings</a></li>
+            {% endfor %}
+        </ul>
+ -->    </div>
 {% endblock %}
