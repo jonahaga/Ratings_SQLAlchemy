@@ -11,7 +11,7 @@ body {
 
 .wrapper {
 	margin: 0 auto;
-	width: 600px; }
+	width: 800px; }
 
 .links {
 	padding: 0;
@@ -20,14 +20,13 @@ body {
 	float: right;
 	clear: both; }
 	
-.topnav { margin-bottom: 15px; }
+.topnav { margin: 3px 0 15px; }
 
 .links li {
 	background-color: #dc0bb7;
 	border-radius: 3px;
 	color: #fff;
 	display: inline;
-	margin: 0 2px;
 	list-style: none;
 	padding: 8px 6px 4px;
 	text-transform: uppercase; }
@@ -67,19 +66,45 @@ h3.average-rating { margin: 5px 0 ; }
 
 .user-ratings { padding-bottom: 50px; }
 
-.user-ratings ul { padding: 0;}
+	.user-ratings ul { padding: 0;}
 
-.user-ratings li {
-	border-bottom: 1px solid #ccc;
-	list-style: none;
-	padding: 5px 0; }
+	.user-ratings li {
+		border-bottom: 1px solid #ccc;
+		list-style: none;
+		padding: 5px 0; }
 	
-	.user-ratings li:first-child { border-top: 2px solid #0b74cf; }
-	
-	.user-ratings li:hover {
-		background-color: #fff; }
+		.user-ratings li:first-child { border-top: 2px solid #0b74cf; }
+		
+		.user-ratings li:hover { background-color: #fff; }
 
-.user-ratings li span.rating { float: right; }
+.user-list table { width: 100%; }
+
+	tr.user_list_head { border-top: 2px solid #0b74cf; }
+	.user-list tr { border-bottom: 1px solid #ccc; }
+		.user-list tr:hover { background-color: #fff; }
+
+	.user-list td { padding: 10px 0; }
+
+	td.user_id_head,
+	td.user_ratings_head { 
+		font-size: 1.1em;
+		font-weight: bold;
+		width: 40% }
+
+	td.user_age_head { 
+		font-size: 1.1em;
+		font-weight: bold;
+		width: 20%;}
+
+	td.user_age_head,
+	td.user_ratings_head,
+	td.user_age_body,
+	td.user_ratings_body { text-align: center; }
+
+	.user-list table a { 
+		display: block;
+		text-decoration: none }
+
 
 h2.profile {
 	border-top: 5px solid #0b74cf;
