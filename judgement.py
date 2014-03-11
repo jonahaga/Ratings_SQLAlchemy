@@ -1,15 +1,22 @@
-from flask import Flask, render_template, redirect, request, session, url_for, flash
+from flask import Flask, render_template, redirect, request, session, url_for, flash, g
 import model
 
 app = Flask(__name__)
 #this is needed for the session to work
 app.secret_key = "shhhhthisisasecret"
 
+@app.teardown_request
+def shutdown_session(exception = None):
+    model.session.remove()
+
+@app.before_request
+def load_user_id():
+    g.user_id = session.get("user_id")
+
 @app.route("/")
 def index():
-    # user_list = model.session.query(model.User).limit(5).all()
-    if session.get("email"):
-        return "User %s is logged in!" %session['email']
+    if g.user_id:
+        return redirect(url_for("view_user", user_id = g.user_id))
     else:
         return render_template("index.html")
 
@@ -24,7 +31,7 @@ def login():
         return redirect(url_for("register"))
     elif user_id != None:
         flash("You are now logged in!")
-        session['id'] = user_id
+        session['user_id'] = user_id
         return redirect(url_for("view_user", user_id=user_id))
     elif user_id == None:
         flash("Password incorrect.")
@@ -32,23 +39,37 @@ def login():
 
 @app.route("/register")
 def register():
-   # if session.get("username"):
+    if g.user_id:
+        return redirect(url_for("view_user", user_id = g.user_id))
     return render_template("register.html")  
 
 #when user submits the registration form 
 @app.route("/register", methods=["POST"])
 def create_account():
-    check_password = request.form.get("password_verify")
-    email = request.form.get("email")
-    password = request.form.get("password")
-    age = request.form.get("age")
-    gender = request.form.get("gender")
-    zipcode = request.form.get("zipcode")
+    check_password = request.form["password_verify"]
+    email = request.form["email"]
+    password = request.form["password"]
+    age = request.form["age"]
+    gender = request.form["gender"]
+    zipcode = request.form["zipcode"]
 
     if check_password == password:
         model.create_new_user(email, password, age, gender, zipcode)
         flash("Thanks for registering. Please login below.")
         return redirect(url_for("login"))
+
+@app.route("/search", methods=["GET"])
+def display_search():
+    return render_template("search.html")
+
+@app.route("/search", methods=["POST"])
+def search():
+    query = request.form['query']
+    movies = model.session.query(model.Movie).\
+        filter(model.Movie.name.ilike("%" + query + "%")).\
+        limit(20).all()
+
+    return render_template("results.html", movies=movies)
 
 # View User Profile
 @app.route("/profile/<user_id>")
@@ -70,25 +91,27 @@ def view_movie(movie_id):
     rating_nums = []
     user_rating = None
     for r in ratings:
-        if r.user_id == session.get('id'):
+        if r.user_id == session.get('user_id'):
             user_rating = r
+        rating_nums.append(r.rating)
     avg_rating = float(sum(rating_nums))/len(rating_nums)
 
     # Prediction code: only predict if the user hasn't rated it.
-    user = model.session.query(model.User).get(session['id'])
     prediction = None
-    if not user_rating:
-        prediction = user.predict_rating(movie)
+    if g.user_id:
+        if not user_rating:
+            user = model.session.query(model.User).get(g.user_id) 
+            prediction = int(user.predict_rating(movie))
     # End prediction
 
-    return render_template("movie.html", movie=movie, 
+    return render_template("movie_profile.html", movie=movie, 
             average=avg_rating, user_rating=user_rating,
             prediction=prediction)
 
 @app.route("/rate/<int:movie_id>", methods=["POST"])
 def rate_movie(movie_id):
     rating_number = int(request.form['rating'])
-    user_id = session.get('id')
+    user_id = session.get('user_id')
     rating = model.session.query(model.Rating).filter_by(user_id=user_id, movie_id=movie_id).first()
 
     if not rating:
@@ -108,6 +131,11 @@ def rate_movie(movie_id):
 def user_list():
     user_list = model.session.query(model.User).limit(10).all()
     return render_template("user_list.html", users = user_list)
+
+@app.route("/logout")
+def logout():
+    del session['user_id']
+    return redirect(url_for("index"))
 
 if __name__ == "__main__":
     app.run(debug = True)
