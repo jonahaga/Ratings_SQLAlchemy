@@ -29,7 +29,7 @@ class User(Base):
     gender = Column(String(8), nullable = True)
     zipcode = Column (String(15), nullable = True)
 
-class Movies(Base):
+class Movie(Base):
     __tablename__= "movies"
 
     id = Column(Integer, primary_key = True)
@@ -37,7 +37,7 @@ class Movies(Base):
     released_at = Column(DateTime(timezone = False), nullable = True)
     imdb_url = Column(String(64))
 
-class Ratings(Base):
+class Rating(Base):
     __tablename__= "ratings"
 
     id = Column(Integer, primary_key = True)
@@ -46,7 +46,7 @@ class Ratings(Base):
     rating = Column(Integer, nullable = False)
 
     user = relationship("User", backref=backref("ratings", order_by=id))
-    movie = relationship("Movies", backref=backref("ratings", order_by=id))
+    movie = relationship("Movie", backref=backref("ratings", order_by=id))
 
 ### End class declarations
 
@@ -57,22 +57,16 @@ def create_new_user(email, password, age, gender, zipcode):
     session.add(new_user)
     session.commit()
 
-def get_userid_by_email(email):
-    user_id = session.query(User).filter_by(email = email).first()
-    return user_id.id
-
 def authenticate(email, password):
     user = session.query(User).filter_by(email = email).first()
     
     if user == None:
         return False
     else:
-        if email == str(user.email) and hash(password) == int(user.password):
+        if hash(password) == int(user.password):
             return int(user.id)
         else:
             return None 
-
-
 
 # model.get_userid_by_email(email)
 #     ratings = model.get_ratings_by_userid(user_id)
