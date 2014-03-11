@@ -67,14 +67,23 @@ def view_movie(movie_id):
     #getting the movie that was selected from users list of movies from profile.html
     movie = model.session.query(model.Movie).get(movie_id)
     ratings = movie.ratings
-    logged_user = session['id']
-    print logged_user
+    rating_nums = []
     user_rating = None
     for r in ratings:
         if r.user_id == session.get('id'):
             user_rating = r
+    avg_rating = float(sum(rating_nums))/len(rating_nums)
 
-    return render_template("movie_profile.html", movie=movie, user_rating=user_rating)
+    # Prediction code: only predict if the user hasn't rated it.
+    user = model.session.query(model.User).get(session['id'])
+    prediction = None
+    if not user_rating:
+        prediction = user.predict_rating(movie)
+    # End prediction
+
+    return render_template("movie.html", movie=movie, 
+            average=avg_rating, user_rating=user_rating,
+            prediction=prediction)
 
 @app.route("/rate/<int:movie_id>", methods=["POST"])
 def rate_movie(movie_id):
