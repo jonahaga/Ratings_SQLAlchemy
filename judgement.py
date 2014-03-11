@@ -17,16 +17,16 @@ def index():
 def login():
     email = request.form.get("email")
     password = request.form.get("password")
-    email = model.authenticate(email, password)
+    user_id = model.authenticate(email, password)
 
-    if email == False:
+    if user_id == False:
         flash("User does not exist. Please register below.")
         return redirect(url_for("register"))
-    elif email != None:
-        flash("User authenticated!")
-        session['id'] = email
-        return redirect(url_for("index"))
-    elif email == None:
+    elif user_id != None:
+        flash("You are now logged in!")
+        session['id'] = user_id
+        return redirect(url_for("view_user", user_id=user_id))
+    elif user_id == None:
         flash("Password incorrect.")
         return redirect(url_for("index"))
 
@@ -46,32 +46,59 @@ def create_account():
     zipcode = request.form.get("zipcode")
 
     if check_password == password:
-
-    # Receive form from Register template
-    # username = request.form.get("username")
-    
-    # user_id = model.get_userid_by_name(username)
-    # if user_id == None:
-    #     username = request.form.get("username")
-    #     password = request.form.get("password")
-    #     flash("Account successfully created. Please sign in below.")
-    #     model.create_account(username, password)
-    #     return redirect(url_for("index"))
-    # else:
-    #     flash("User already exists.")
-    #     return redirect(url_for("register"))
-   
-
         model.create_new_user(email, password, age, gender, zipcode)
-        return render_template("register.html")
+        flash("Thanks for registering. Please login below.")
+        return redirect(url_for("login"))
 
 # View User Profile
 @app.route("/profile/<user_id>")
 def view_user(user_id):
-    user_id = model.get_userid_by_email(email)
-    ratings = model.get_ratings_by_userid(user_id)
-    return render_template("profile.html", ratings = ratings, session = session, user_id = user_id)
+    user = model.session.query(model.User).get(user_id)
 
+    if user:
+        return render_template("profile.html", user = user)
+
+    return "User not found."
+
+# View Movie Profile
+@app.route("/movie_profile/<movie_id>")
+#bring in arguments for the specific movie id and the user it was rated by 
+def view_movie(movie_id):
+    #getting the movie that was selected from users list of movies from profile.html
+    movie = model.session.query(model.Movie).get(movie_id)
+    ratings = movie.ratings
+    logged_user = session['id']
+    print logged_user
+    user_rating = None
+    for r in ratings:
+        if r.user_id == session.get('id'):
+            user_rating = r
+
+    return render_template("movie_profile.html", movie=movie, user_rating=user_rating)
+
+@app.route("/rate/<int:movie_id>", methods=["POST"])
+def rate_movie(movie_id):
+    rating_number = int(request.form['rating'])
+    user_id = session.get('id')
+    rating = model.session.query(model.Rating).filter_by(user_id=user_id, movie_id=movie_id).first()
+
+    if not rating:
+        flash("Rating added", "success")
+        rating = model.Rating(user_id=user_id, movie_id=movie_id)
+        model.session.add(rating)
+    else:
+        flash("Rating updated", "success")
+
+    rating.rating = rating_number
+    model.session.commit()
+
+    return redirect(url_for("view_movie", movie_id=movie_id))
+
+# User List
+@app.route("/user_list")
+def user_list():
+    user_list = model.session.query(model.User).limit(10).all()
+    return render_template("user_list.html", users = user_list)
 
 if __name__ == "__main__":
     app.run(debug = True)
