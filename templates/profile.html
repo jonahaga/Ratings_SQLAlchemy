@@ -1,0 +1,28 @@
+{% extends 'master.html' %}
+
+{% block body %}
+<h1>Welcome to the Judgemental Eye</h1>
+    <ul>
+        {% for message in get_flashed_messages() %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    <h2>User: {{user.id}}</h2>
+    <div class="user-ratings"
+        <ul>
+            <!-- i is object which is a users rating of a movie, so you can get the movie name from that object -->
+            {% for i in user.ratings %}
+                <li><a href={{ url_for("view_movie", movie_id=i.movie.id) }}>{{ i.movie.name }}</a> <span class="rating">Rating: <strong>{{ i.rating }}</strong></span></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="links">
+        <ul>
+            <li><a href={{ url_for("user_list") }}>View all users</li>
+        </ul>    
+    </div>
+
+
+
+{% endblock %}
