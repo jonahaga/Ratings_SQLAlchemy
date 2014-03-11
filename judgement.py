@@ -111,12 +111,12 @@ def view_movie(movie_id):
 @app.route("/rate/<int:movie_id>", methods=["POST"])
 def rate_movie(movie_id):
     rating_number = int(request.form['rating'])
-    user_id = session.get('user_id')
-    rating = model.session.query(model.Rating).filter_by(user_id=user_id, movie_id=movie_id).first()
+    # user_id = session.get('user_id')
+    rating = model.session.query(model.Rating).filter_by(user_id=g.user_id, movie_id=movie_id).first()
 
     if not rating:
         flash("Rating added", "success")
-        rating = model.Rating(user_id=user_id, movie_id=movie_id)
+        rating = model.Rating(user_id=g.user_id, movie_id=movie_id)
         model.session.add(rating)
     else:
         flash("Rating updated", "success")
@@ -129,7 +129,7 @@ def rate_movie(movie_id):
 # User List
 @app.route("/user_list")
 def user_list():
-    user_list = model.session.query(model.User).limit(10).all()
+    user_list = model.session.query(model.User).limit(50).all()
     return render_template("user_list.html", users = user_list)
 
 @app.route("/logout")
