@@ -7,14 +7,14 @@
         {% endfor %}
     </ul>
 
-    <form action="/register" method="post">
+    <form class="register" action="/register" method="post">
         <input type="text" class="form-control" placeholder="Email" name="email">
         <input type="password" class="form-control" placeholder="Password" name="password">
         <input type="password" class="form-control" placeholder="Password" name="password_verify">
         <input type="number" class="form-control" placeholder="Age" name="age">
         <input type="text" class="form-control" placeholder="Gender" name="gender">
         <input type="text" class="form-control" placeholder="Zipcode" name="zipcode">
-        <input type="submit" class="btn btn-lg btn-primary btn-block" value="Submit">
+        <input type="submit" class="btn btn-md btn-primary btn-block" value="Submit">
     </form>
 
 <!-- {% for user in users %}

@@ -1,13 +1,31 @@
 <html>
 <head>
     <title>Judgemental Eye</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css" rel="stylesheet">
 </head>
 <body>
+
+<div class="wrapper">
+    <div class="container">
+        <div class="topnav clearfix">
+            <ul class="links">
+                {% if g.user_id %}
+                    <li><a href="{{ url_for("view_user", user_id=g.user_id ) }}">My Ratings</a></li>
+                {% endif %}
+                <li><a href="{{ url_for("user_list") }}">View All Users</a></li>
+                <li><a href="{{ url_for("display_search") }}"><span class="glyphicon glyphicon-search"></span> Search</a></li>
+                {% if g.user_id %}
+                    <li><a href="{{ url_for("logout") }}">Logout</a></li>
+                {% endif %}
+                {% if not g.user_id %}
+                    <li><a href="{{ url_for("login") }}">Login</a> / <a href="{{ url_for("register") }}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>    
     {% block body %}{% endblock %}
-<!-- 
-    {% for user in user_list %}
-    <h2>User {{ user.id }}, age {{ user.age }} has {{ user.ratings|length }} ratings</h2>
-    {% endfor %}
- -->
+
+    </div>
+</div>
 </body>
 </html>

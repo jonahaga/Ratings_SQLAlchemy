@@ -1,0 +1,11 @@
+{% extends 'master.html' %}
+
+{% block body %}
+
+<h1><span class="glyphicon glyphicon-search"></span> Search for Movies</h1>
+    <form class="movie_search" action="{{url_for("search")}}" method="POST">
+        <input type="text" class="form-control" placeholder="Movie Title" name="query">
+        <input type="submit" class="btn btn-md btn-primary btn-block">
+    </form>
+
+{% endblock %}

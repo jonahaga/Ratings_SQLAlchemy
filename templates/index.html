@@ -7,10 +7,10 @@
         {% endfor %}
     </ul>
  
-    <form action="{{ url_for('login') }}" method="post">
+    <form class="signin" action="{{ url_for('login') }}" method="post">
         <input type="text" class="form-control" placeholder="Email" name="email">
         <input type="password" class="form-control" placeholder="Password" name="password">
-        <input type="submit" class="btn btn-lg btn-primary btn-block" value="Submit">
+        <input type="submit" class="btn btn-md btn-primary btn-block" value="Submit">
     </form>
 
     Not a user? <a href="{{ url_for("register") }}">Register</a> a new account

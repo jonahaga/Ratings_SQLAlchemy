@@ -7,8 +7,8 @@
             <li>{{ message }}</li>
         {% endfor %}
     </ul>
-    <h2>User: {{user.id}}</h2>
-    <div class="user-ratings"
+    <h2 class="profile">User: {{user.id}}</h2>
+    <div class="user-ratings">
         <ul>
             <!-- i is object which is a users rating of a movie, so you can get the movie name from that object -->
             {% for i in user.ratings %}
@@ -16,13 +16,6 @@
             {% endfor %}
         </ul>
     </div>
-
-    <div class="links">
-        <ul>
-            <li><a href={{ url_for("user_list") }}>View all users</li>
-        </ul>    
-    </div>
-
 
 
 {% endblock %}

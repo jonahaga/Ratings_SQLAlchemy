@@ -1,15 +1,15 @@
 {% extends 'master.html' %}
 
 {% block body %}
-<h1>Welcome to the Judgemental Eye</h1>
-    <h2>{{ movie.name }}</h2>
+<h2 class="movie-title">{{ movie.name }}</h2>
+    <h3 class="average-rating">Average Rating: <strong>{{ "%.2f"%average }}</strong></h3>
     <ul>
         {% for message in get_flashed_messages() %}
             <li>{{ message }}</li>
         {% endfor %}
     </ul>
     
-    <a href="{{ movie.imdb_url }}">View {{movie.name}} on IMDB</a>
+    <a href="{{ movie.imdb_url }}">View <strong>{{movie.name}}</strong> on IMDB</a>
 
     <div class="user-ratings">
         {% if user_rating %}
@@ -20,9 +20,10 @@
         <h3>We predict you will rate this movie {{prediction}}.</h3>
         {% endif %}
 
+        {% if g.user_id %}
         <h2>Rate this movie</h2>
             <form action="{{url_for('rate_movie', movie_id=movie.id)}}" method="post">
-                <select name="rating">
+                <select class="form-control" name="rating">
                     <option value="0">0</option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -30,8 +31,9 @@
                     <option value="4">4</option>
                     <option value="5">5</option>
                 </select>
-                <input type="submit">
-            </form>    
+                <input type="submit" class="btn btn-md btn-primary btn-block">
+            </form> 
+        {% endif %}   
     </div>
 
 {% endblock %}
