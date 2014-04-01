@@ -2,7 +2,6 @@ from flask import Flask, render_template, redirect, request, session, url_for, f
 import model
 
 app = Flask(__name__)
-#this is needed for the session to work
 app.secret_key = "shhhhthisisasecret"
 
 @app.teardown_request
@@ -43,7 +42,6 @@ def register():
         return redirect(url_for("view_user", user_id = g.user_id))
     return render_template("register.html")  
 
-#when user submits the registration form 
 @app.route("/register", methods=["POST"])
 def create_account():
     check_password = request.form["password_verify"]
@@ -83,9 +81,7 @@ def view_user(user_id):
 
 # View Movie Profile
 @app.route("/movie_profile/<movie_id>")
-#bring in arguments for the specific movie id and the user it was rated by 
 def view_movie(movie_id):
-    #getting the movie that was selected from users list of movies from profile.html
     movie = model.session.query(model.Movie).get(movie_id)
     ratings = movie.ratings
     rating_nums = []
@@ -96,13 +92,11 @@ def view_movie(movie_id):
         rating_nums.append(r.rating)
     avg_rating = float(sum(rating_nums))/len(rating_nums)
 
-    # Prediction code: only predict if the user hasn't rated it.
     prediction = None
     if g.user_id:
         if not user_rating:
             user = model.session.query(model.User).get(g.user_id) 
             prediction = int(user.predict_rating(movie))
-    # End prediction
 
     return render_template("movie_profile.html", movie=movie, 
             average=avg_rating, user_rating=user_rating,
@@ -111,7 +105,6 @@ def view_movie(movie_id):
 @app.route("/rate/<int:movie_id>", methods=["POST"])
 def rate_movie(movie_id):
     rating_number = int(request.form['rating'])
-    # user_id = session.get('user_id')
     rating = model.session.query(model.Rating).filter_by(user_id=g.user_id, movie_id=movie_id).first()
 
     if not rating:
