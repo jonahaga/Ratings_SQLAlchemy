@@ -2,18 +2,8 @@ import model
 import csv
 import datetime
 
-# open a file
-# read a line
-# parse a line
-# create an object
-# add the object to a session
-# commit
-# repeat until done
 
 def load_users(session):
-    # use u.user
-    # id|age|gender|occupation|zipcode
-    # 1|24|M|technician|85711
     with open('seed_data/u.user', 'rb') as f:
         reader = csv.reader(f, delimiter='|')
         for row in reader:
@@ -24,7 +14,6 @@ def load_users(session):
     session.commit()
 
 def load_movies(session):
-    # use u.item
     with open('seed_data/u.item', 'rb') as f:
         reader = csv.reader(f, delimiter = "|")
         for row in reader:
@@ -40,7 +29,6 @@ def load_movies(session):
     session.commit()
 
 def load_ratings(session):
-    # use u.data
     with open('seed_data/u.data', 'rb') as f:
         reader = csv.reader(f, delimiter = "\t")
         for row in reader:
@@ -52,7 +40,6 @@ def load_ratings(session):
 
 
 def main(session):
-    # You'll call each of the load_* functions with the session as an argument
     load_users(session)
     load_movies(session)
     load_ratings(session)

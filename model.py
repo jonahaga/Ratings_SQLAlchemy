@@ -6,7 +6,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, backref
 import correlation
 
-# Scoped Session and session maker help deal with thread safety for multiple users with web apps
+# Scoped Session and Session Maker help deal with thread safety for multiple users
 engine = create_engine("sqlite:///ratings.db", echo=False)
 session = scoped_session(sessionmaker(bind=engine,
                                       autocommit = False,
@@ -15,11 +15,7 @@ session = scoped_session(sessionmaker(bind=engine,
 Base = declarative_base()
 Base.query = session.query_property()
 
-### Class declarations go here
-
-#this is nonstandard use of python class attributes... this is for SQLAlchemy only
-# if nullable = true it's optional, it can be left blank
-#the datatypes in the following are for SQL Alchemy only
+### Class declarations
 class User(Base):
     __tablename__= "users"
 
@@ -81,7 +77,6 @@ class Rating(Base):
 
 ### End class declarations
 
-##functions
 
 def create_new_user(email, password, age, gender, zipcode):
     new_user = User(email=email, password=hash(password), age=age, gender=gender, zipcode=zipcode)
